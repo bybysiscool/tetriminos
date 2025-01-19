@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplayer Tetris</title>
-    <style>
-        body { text-align: center; }
-        canvas { border: 1px solid black; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Menu</title>
+  <style>
+    button { padding: 10px 20px; }
+  </style>
 </head>
 <body>
-    <canvas id="tetris" width="300" height="600"></canvas>
-    <script src="game.js"></script>
+  <h1>Welcome to Tetris!</h1>
+  <button onclick="joinGame()">Join Game</button>
+  <button onclick="createGame()">Create Game</button>
+
+  <script>
+    function joinGame() {
+      window.location.href = '/game.html'; // Redirect to the game page
+    }
+
+    function createGame() {
+      window.location.href = '/game.html'; // Redirect to the game page with a new room
+    }
+  </script>
 </body>
 </html>
