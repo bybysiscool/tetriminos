@@ -17,6 +17,20 @@ const tetrominos = [
 
 let board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 let currentTetromino = generateTetromino();
+const ws = new WebSocket('wss://retrotube.info/ws'); // Connect to your WebSocket server
+
+ws.onopen = () => {
+  // Join the game room when connected
+  ws.send(JSON.stringify({ type: 'joinRoom', roomId: 'room1' }));
+};
+
+ws.onmessage = (message) => {
+  const data = JSON.parse(message.data);
+  if (data.type === 'move') {
+    // Handle received moves
+    applyMove(data.move);
+  }
+};
 
 function generateTetromino() {
   const shape = tetrominos[Math.floor(Math.random() * tetrominos.length)];
@@ -51,6 +65,7 @@ function drawTetromino() {
 function moveTetromino(dx, dy) {
   currentTetromino.x += dx;
   currentTetromino.y += dy;
+  sendMove({ type: 'move', move: { x: currentTetromino.x, y: currentTetromino.y } });
   draw();
 }
 
@@ -58,7 +73,23 @@ function rotateTetromino() {
   const shape = currentTetromino.shape;
   const newShape = shape[0].map((_, index) => shape.map(row => row[index]));
   currentTetromino.shape = newShape;
+  sendMove({ type: 'move', move: { shape: currentTetromino.shape } });
   draw();
+}
+
+function applyMove(move) {
+  if (move.x !== undefined && move.y !== undefined) {
+    currentTetromino.x = move.x;
+    currentTetromino.y = move.y;
+  }
+  if (move.shape) {
+    currentTetromino.shape = move.shape;
+  }
+  draw();
+}
+
+function sendMove(move) {
+  ws.send(JSON.stringify({ type: 'move', roomId: 'room1', move }));
 }
 
 document.addEventListener('keydown', (event) => {
