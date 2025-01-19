@@ -63,9 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameStarted = false;
   let secondPlayerJoined = false;
 
-  // PeerJS connection and open event
+  // Show the peer ID of the player
   peer.on('open', (id) => {
     console.log('My peer ID is: ' + id);
+    document.getElementById('peer-id').textContent = id;
+    document.getElementById('peer-id-display').classList.remove('hidden');
   });
 
   // Listen for incoming connections (second player joining)
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Start game button for the first player
   document.getElementById('start-game').addEventListener('click', () => {
     // First player creates a game and shares the peer ID
-    const peerId = prompt('Enter peer ID to connect:');
+    const peerId = prompt('Share this Peer ID with the second player:');
     connectToPeer(peerId);
     startGame();
   });
