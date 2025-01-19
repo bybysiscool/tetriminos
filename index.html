@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Multiplayer Tetris</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Load PeerJS from CDN before your script.js -->
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
   <div id="main-menu">
     <button id="start-game">Start Game</button>
     <button id="join-game">Join Game</button>
-    <div id="peer-id-display" class="hidden">Your Peer ID: <span id="peer-id"></span></div>
+    <input id="room-code" placeholder="Enter Room Code" class="hidden">
+    <div id="peer-id-display" class="hidden">Your Room Code: <span id="room-id"></span></div>
   </div>
-  
+
   <div id="game-container" class="hidden">
     <div id="player1-box" class="game-box"></div>
     <div id="player2-box" class="game-box"></div>
     <button id="pause-game">Pause</button>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
