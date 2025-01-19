@@ -4,13 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameStarted = false;
   let secondPlayerJoined = false;
   let thirdPlayerJoined = false;
+  let messageQueue = []; // Queue for messages to be sent once WebSocket is open
 
   // Establish WebSocket connection
   function connectToServer() {
-    ws = new WebSocket('wss://retrotube.info/ws');
+    ws = new WebSocket('ws://localhost:3000');
 
     ws.onopen = () => {
       console.log('Connected to WebSocket server');
+      // Process any messages in the queue
+      while (messageQueue.length > 0) {
+        ws.send(messageQueue.shift());
+      }
     };
 
     ws.onmessage = (event) => {
@@ -58,6 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('The room is already full.');
           break;
       }
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
     };
   }
 
