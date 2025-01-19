@@ -1,0 +1,17 @@
+const ws = new WebSocket('wss://retrotube.info/ws');
+
+ws.onopen = () => {
+  // Send join room message when connected
+  ws.send(JSON.stringify({ type: 'joinRoom', roomId: 'room1' }));
+};
+
+ws.onmessage = (message) => {
+  const data = JSON.parse(message.data);
+  if (data.type === 'move') {
+    // Update the game state based on the received move
+  }
+};
+
+function sendMove(move) {
+  ws.send(JSON.stringify({ type: 'move', roomId: 'room1', move }));
+}
