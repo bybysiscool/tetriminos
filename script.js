@@ -1,115 +1,77 @@
-document.addEventListener('DOMContentLoaded', () => {
-  let ws;
-  let roomCode;
-  let gameStarted = false;
-  let secondPlayerJoined = false;
-  let thirdPlayerJoined = false;
-  let messageQueue = []; // Queue for messages to be sent once WebSocket is open
+const grid = document.getElementById('gameGrid');
+const scoreDisplay = document.getElementById('score');
+const rows = 20, cols = 10;
+let gridArray = [];
+let currentTetromino, currentPos, score = 0;
 
-  // Establish WebSocket connection
-  function connectToServer() {
-    ws = new WebSocket('ws://localhost:3000');
+const tetrominos = {
+    I: [[1, 1, 1, 1]],
+    O: [[1, 1], [1, 1]],
+    T: [[0, 1, 0], [1, 1, 1]],
+    S: [[0, 1, 1], [1, 1, 0]],
+    Z: [[1, 1, 0], [0, 1, 1]],
+    J: [[1, 0, 0], [1, 1, 1]],
+    L: [[0, 0, 1], [1, 1, 1]],
+};
 
-    ws.onopen = () => {
-      console.log('Connected to WebSocket server');
-      // Process any messages in the queue
-      while (messageQueue.length > 0) {
-        ws.send(messageQueue.shift());
-      }
-    };
+function createGrid() {
+    grid.innerHTML = '';
+    gridArray = Array.from({ length: rows }, () => Array(cols).fill(0));
+    gridArray.forEach(row => row.forEach(() => {
+        const div = document.createElement('div');
+        grid.appendChild(div);
+    }));
+}
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      switch (data.type) {
-        case 'roomCreated':
-          roomCode = data.roomCode;
-          document.getElementById('room-id').textContent = roomCode;
-          document.getElementById('peer-id-display').classList.remove('hidden');
-          break;
+function drawTetromino() {
+    currentTetromino.shape.forEach((row, r) => row.forEach((cell, c) => {
+        if (cell) gridArray[currentPos.y + r][currentPos.x + c] = 1;
+    }));
+    renderGrid();
+}
 
-        case 'roomJoined':
-          if (data.playerCount === 2) secondPlayerJoined = true;
-          if (data.playerCount === 3) thirdPlayerJoined = true;
-          checkStartGame();
-          break;
+function renderGrid() {
+    Array.from(grid.children).forEach((div, i) => {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        div.style.backgroundColor = gridArray[row][col] ? '#00ff00' : '#333';
+    });
+}
 
-        case 'gameStarted':
-          gameStarted = true;
-          document.getElementById('main-menu').style.display = 'none';
-          document.getElementById('game-container').style.display = 'flex';
-          startGame();
-          break;
+function spawnTetromino() {
+    const keys = Object.keys(tetrominos);
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    currentTetromino = { shape: tetrominos[randomKey] };
+    currentPos = { x: Math.floor(cols / 2) - 1, y: 0 };
+    drawTetromino();
+}
 
-        case 'newPlayerJoined':
-          // Show "Waiting for players" until all players are connected
-          if (!secondPlayerJoined || !thirdPlayerJoined) {
-            document.getElementById('waiting-screen').classList.remove('hidden');
-          }
-          break;
+function moveLeft() {
+    currentPos.x = Math.max(0, currentPos.x - 1);
+    drawTetromino();
+}
 
-        case 'gameData':
-          // Handle game data from the other players (e.g., move)
-          break;
+function moveRight() {
+    currentPos.x = Math.min(cols - currentTetromino.shape[0].length, currentPos.x + 1);
+    drawTetromino();
+}
 
-        case 'garbageLines':
-          // Handle receiving garbage lines
-          break;
+function rotate() {
+    currentTetromino.shape = currentTetromino.shape[0].map((_, i) =>
+        currentTetromino.shape.map(row => row[i]).reverse()
+    );
+    drawTetromino();
+}
 
-        case 'playerLeft':
-          alert('A player left the room.');
-          break;
+function drop() {
+    currentPos.y = Math.min(rows - currentTetromino.shape.length, currentPos.y + 1);
+    drawTetromino();
+    // Check for collision or landing logic here.
+}
 
-        case 'roomFull':
-          alert('The room is already full.');
-          break;
-      }
-    };
+function startGame() {
+    createGrid();
+    spawnTetromino();
+}
 
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-  }
-
-  // Handle "Start Game" for the first player
-  document.getElementById('start-game').addEventListener('click', () => {
-    connectToServer();
-    ws.send(JSON.stringify({ type: 'createRoom' }));
-    document.getElementById('waiting-screen').classList.remove('hidden');
-  });
-
-  // Handle "Join Game" for the second or third player
-  document.getElementById('join-game').addEventListener('click', () => {
-    const enteredRoomCode = prompt('Enter room code:');
-    connectToServer();
-    ws.send(JSON.stringify({ type: 'joinRoom', roomCode: enteredRoomCode }));
-  });
-
-  // Check if enough players are connected and start the game
-  function checkStartGame() {
-    if (secondPlayerJoined && thirdPlayerJoined && !gameStarted) {
-      ws.send(JSON.stringify({ type: 'startGame' }));
-    }
-  }
-
-  // Start the game logic (placeholders)
-  function startGame() {
-    console.log('Game started!');
-    gameLoop();
-  }
-
-  function gameLoop() {
-    if (gameStarted) {
-      // Add your game logic here
-      requestAnimationFrame(gameLoop);
-    }
-  }
-
-  // Prevent closing the tab while the game is running
-  window.addEventListener('beforeunload', (event) => {
-    if (gameStarted) {
-      const message = 'Are you sure you want to leave? Your game progress may be lost.';
-      event.returnValue = message;
-      return message;
-    }
-  });
-});
+startGame();
