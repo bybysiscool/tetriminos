@@ -3,35 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplayer Tetris</title>
+    <title>Main Menu</title>
     <style>
-        body { text-align: center; }
-        canvas { border: 1px solid black; margin-top: 20px; }
         button { padding: 10px 20px; }
     </style>
 </head>
 <body>
-    <h1>Multiplayer Tetris</h1>
-    <div id="room-info"></div>
-    <canvas id="tetris" width="300" height="600"></canvas>
-    <button id="startGame">Start Game</button>
+    <h1>Welcome to Multiplayer Tetris!</h1>
+    <button onclick="createGame()">Create New Game</button>
+    <button onclick="joinGame()">Join Game</button>
 
-    <script src="game.js"></script>
     <script>
-        // Get the room ID from the URL parameters (room code)
-        const urlParams = new URLSearchParams(window.location.search);
-        const roomId = urlParams.get('roomId') || 'defaultRoom'; // Default room if no ID is provided
-        
-        // Show the room ID on the page
-        document.getElementById('room-info').textContent = `Room ID: ${roomId}`;
-        
-        // Create or join the room based on the room ID
-        ws.send(JSON.stringify({ type: 'joinRoom', roomId }));
+        function generateRoomCode() {
+            // Generate a simple random room code (you can customize this logic)
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
 
-        document.getElementById('startGame').addEventListener('click', () => {
-            // Start the game (you can modify this function to trigger the start process in the server)
-            alert('Game is starting...');
-        });
+        function createGame() {
+            const roomId = generateRoomCode(); // Generate a new room code
+            window.location.href = `/game.html?roomId=${roomId}`; // Redirect to the game page with room ID
+        }
+
+        function joinGame() {
+            const roomId = prompt('Enter Room ID to Join:'); // Prompt user for room ID
+            if (roomId) {
+                window.location.href = `/game.html?roomId=${roomId}`; // Redirect to the game page with room ID
+            }
+        }
     </script>
 </body>
 </html>
