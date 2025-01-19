@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Establish WebSocket connection
   function connectToServer() {
-    ws = new WebSocket('ws://localhost:3000');
+    ws = new WebSocket('wss://retrotube.info/ws');
 
     ws.onopen = () => {
       console.log('Connected to WebSocket server');
