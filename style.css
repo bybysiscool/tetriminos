@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+#main-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#game-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.game-box {
+  width: 200px;
+  height: 400px;
+  border: 1px solid black;
+  position: relative;
+  display: inline-block;
+}
+
+button {
+  padding: 10px;
+  margin: 10px;
+  font-size: 18px;
+}
+
+.hidden {
+  display: none;
+}
