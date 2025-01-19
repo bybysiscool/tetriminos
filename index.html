@@ -1,35 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Menu</title>
-    <style>
-        button { padding: 10px 20px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Tetris</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to Multiplayer Tetris!</h1>
-    <button onclick="createGame()">Create New Game</button>
-    <button onclick="joinGame()">Join Game</button>
+  <div id="main-menu">
+    <button id="start-game">Start Game</button>
+  </div>
+  
+  <div id="game-container" class="hidden">
+    <div id="player1-box" class="game-box"></div>
+    <div id="player2-box" class="game-box"></div>
+    <button id="pause-game">Pause</button>
+  </div>
 
-    <script>
-        function generateRoomCode() {
-            // Generate a simple random room code (you can customize this logic)
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
-        }
-
-        function createGame() {
-            const roomId = generateRoomCode(); // Generate a new room code
-            window.location.href = `/game.html?roomId=${roomId}`; // Redirect to the game page with room ID
-        }
-
-        function joinGame() {
-            const roomId = prompt('Enter Room ID to Join:'); // Prompt user for room ID
-            if (roomId) {
-                window.location.href = `/game.html?roomId=${roomId}`; // Redirect to the game page with room ID
-            }
-        }
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
