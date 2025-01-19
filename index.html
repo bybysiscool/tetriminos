@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiplayer Tetris</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Tetris</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="main-menu">
-    <button id="start-game">Start Game</button>
-    <button id="join-game">Join Game</button>
-    <input id="room-code" placeholder="Enter Room Code" class="hidden">
-    <div id="peer-id-display" class="hidden">Your Room Code: <span id="room-id"></span></div>
-    <div id="waiting-screen" class="hidden">Waiting for players to join...</div>
-  </div>
-
-  <div id="game-container" class="hidden">
-    <div id="player1-box" class="game-box"></div>
-    <div id="player2-box" class="game-box"></div>
-    <div id="player3-box" class="game-box"></div>
-    <button id="pause-game">Pause</button>
-  </div>
+    <div class="game-container">
+        <h1>Tetris</h1>
+        <div class="game-grid" id="gameGrid"></div>
+        <div class="score">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        <div class="controls">
+            <button onclick="moveLeft()">Left</button>
+            <button onclick="rotate()">Rotate</button>
+            <button onclick="moveRight()">Right</button>
+            <button onclick="drop()">Drop</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
