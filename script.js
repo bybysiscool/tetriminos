@@ -14,30 +14,41 @@ const tetrominos = {
     L: [[0, 0, 1], [1, 1, 1]],
 };
 
+// Create a blank grid
 function createGrid() {
     grid.innerHTML = '';
     gridArray = Array.from({ length: rows }, () => Array(cols).fill(0));
-    gridArray.forEach(row => row.forEach(() => {
-        const div = document.createElement('div');
-        grid.appendChild(div);
-    }));
-}
-
-function drawTetromino() {
-    currentTetromino.shape.forEach((row, r) => row.forEach((cell, c) => {
-        if (cell) gridArray[currentPos.y + r][currentPos.x + c] = 1;
-    }));
-    renderGrid();
-}
-
-function renderGrid() {
-    Array.from(grid.children).forEach((div, i) => {
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        div.style.backgroundColor = gridArray[row][col] ? '#00ff00' : '#333';
+    gridArray.forEach(() => {
+        for (let i = 0; i < cols; i++) {
+            const div = document.createElement('div');
+            grid.appendChild(div);
+        }
     });
 }
 
+// Draw the tetromino on the grid
+function drawTetromino() {
+    clearGrid();
+    currentTetromino.shape.forEach((row, r) => {
+        row.forEach((cell, c) => {
+            if (cell) {
+                const x = currentPos.x + c;
+                const y = currentPos.y + r;
+                if (y >= 0 && y < rows && x >= 0 && x < cols) {
+                    const index = y * cols + x;
+                    grid.children[index].classList.add('active');
+                }
+            }
+        });
+    });
+}
+
+// Clear grid visual (remove active class)
+function clearGrid() {
+    Array.from(grid.children).forEach(div => div.classList.remove('active'));
+}
+
+// Spawn a random tetromino
 function spawnTetromino() {
     const keys = Object.keys(tetrominos);
     const randomKey = keys[Math.floor(Math.random() * keys.length)];
@@ -46,16 +57,19 @@ function spawnTetromino() {
     drawTetromino();
 }
 
+// Move tetromino left
 function moveLeft() {
     currentPos.x = Math.max(0, currentPos.x - 1);
     drawTetromino();
 }
 
+// Move tetromino right
 function moveRight() {
     currentPos.x = Math.min(cols - currentTetromino.shape[0].length, currentPos.x + 1);
     drawTetromino();
 }
 
+// Rotate the tetromino
 function rotate() {
     currentTetromino.shape = currentTetromino.shape[0].map((_, i) =>
         currentTetromino.shape.map(row => row[i]).reverse()
@@ -63,12 +77,13 @@ function rotate() {
     drawTetromino();
 }
 
+// Drop the tetromino
 function drop() {
     currentPos.y = Math.min(rows - currentTetromino.shape.length, currentPos.y + 1);
     drawTetromino();
-    // Check for collision or landing logic here.
 }
 
+// Start the game
 function startGame() {
     createGrid();
     spawnTetromino();
